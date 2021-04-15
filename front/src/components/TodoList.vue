@@ -5,7 +5,8 @@
     <TodoItem v-for="(todo, idx) in todos" :key="idx"
       :title="todo.title"
       :completed="todo.completed"
-      :id="id"
+      :id="todo.id"
+      @toggleItem="toggleTodo(idx)"
     />
   </div>
 </template>
@@ -14,7 +15,7 @@
 import { defineComponent } from 'vue';
 import CreateTodo from '@/components/CreateTodo.vue';
 import TodoItem from '@/components/TodoItem.vue';
-import apiMock from '@/api/apimock';
+import api from '@/api';
 import { Todo } from '@/api/contract';
 
 export default defineComponent({
@@ -25,11 +26,14 @@ export default defineComponent({
     };
   },
   async created() {
-    this.todos = await apiMock.todos.getTodos();
+    this.todos = await api.todos.getTodos();
   },
   methods: {
     todoCreated(todo: Todo) {
       this.todos.push(todo);
+    },
+    toggleTodo(idx: number) {
+      this.todos[idx].completed = !this.todos[idx].completed;
     },
   },
 });

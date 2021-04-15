@@ -1,13 +1,13 @@
 <template>
-  <div class="new-todo">
+  <form class="new-todo" @submit.prevent="createTodo" >
     <input type="text" name="title" placeholder="New Todo" v-model="title">
-    <button @click="createTodo" :disabled="creating">Add Todo</button>
-  </div>
+    <button type="submit" :disabled="creating">Add Todo</button>
+  </form>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import apiMock from '@/api/apimock';
+import api from '@/api';
 
 export default defineComponent({
   data() {
@@ -20,7 +20,7 @@ export default defineComponent({
     async createTodo() {
       if (!this.title) return;
       this.creating = true;
-      const newTodo = await apiMock.todos.createTodo(this.title);
+      const newTodo = await api.todos.createTodo(this.title);
       this.title = '';
       this.$emit('todoCreated', newTodo);
       this.creating = false;

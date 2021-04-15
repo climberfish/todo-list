@@ -1,4 +1,5 @@
 import { json } from 'body-parser';
+import cors from 'cors';
 import express from 'express';
 
 const PORT = 4000;
@@ -16,6 +17,7 @@ const defaultDb: Database = { todos: [] }
 export const initServer = (db: Database = defaultDb) => {
   const app = express();
   app.use(json());
+  app.use(cors());
 
   const todosRouter = express.Router();
 
@@ -33,8 +35,8 @@ export const initServer = (db: Database = defaultDb) => {
       res.status(404).json({ error: 'Todo not found' });
       return;
     }
-    if (newTodoParams.title) todoToUpdate.title = newTodoParams.title;
-    if (newTodoParams.completed) todoToUpdate.completed = newTodoParams.completed;
+    if (Object.keys(newTodoParams).includes('title')) todoToUpdate.title = newTodoParams.title;
+    if (Object.keys(newTodoParams).includes('completed')) todoToUpdate.completed = newTodoParams.completed;
     res.json(todoToUpdate);
   });
   // todosRouter.delete('/', (_, res) => res.send('Deleta todo')); ??

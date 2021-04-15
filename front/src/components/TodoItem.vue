@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import apiMock from '@/api/apimock';
+import api from '@/api';
 
 export default defineComponent({
   props: {
@@ -22,8 +22,10 @@ export default defineComponent({
   },
   methods: {
     async toggleItem() {
+      if (this.updating) return;
+
       this.updating = true;
-      await apiMock.todos.updateTodo(this.id, { completed: !this.completed });
+      await api.todos.updateTodo(this.id, { completed: !this.completed });
       this.$emit('toggleItem');
       this.updating = false;
     },
