@@ -16,7 +16,7 @@ import { defineComponent } from 'vue';
 import CreateTodo from '@/components/CreateTodo.vue';
 import TodoItem from '@/components/TodoItem.vue';
 import api from '@/api';
-import { Todo } from '@/api/contract';
+import { Todo } from 'api/contract';
 
 export default defineComponent({
   components: { CreateTodo, TodoItem },

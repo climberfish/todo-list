@@ -1,4 +1,4 @@
-import { Todo } from '@/api/contract';
+import { Todo } from 'api/contract';
 
 export const todos: Todo[] = [
   {
