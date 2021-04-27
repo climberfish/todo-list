@@ -1,18 +1,18 @@
-import { Application } from 'express';
 import request from 'supertest';
-import { initServer, Todo } from '../src/server';
+import { Todo } from '@/domain/entities/todo.entity';
+
+const todos: Todo[] = [];
+jest.mock('@/infra/db', () => ({ defaultDb: { todos } }));
+import App from '@/infra/web/server';
 
 describe('Todos API', () => {
-  let app: Application;
-  const todos: Todo[] = [];
-
   beforeEach(() => {
-    app = initServer({ todos });
+    todos.length = 0;
   });
 
   it('Get Todo by id', (done) => {
     const theTodo = { id: 1, title: 'title', completed: false };
-    app = initServer({ todos: [theTodo] });
+    todos.push(theTodo);
     getTodo(1)
       .expect('Content-Type', /json/)
       .expect(200)
@@ -24,8 +24,8 @@ describe('Todos API', () => {
   });
 
   it('Get all Todos', (done) => {
-    request(app)
-      .get('/todos')
+    request(App)
+      .get('/api/todos')
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
@@ -36,7 +36,7 @@ describe('Todos API', () => {
   });
 
   it('Create Todo', (done) => {
-    const newTodo = { title: 'New Todo' }
+    const newTodo = { title: 'New Todo' };
     createTodo(newTodo)
       .expect('Content-Type', /json/)
       .expect(200)
@@ -50,17 +50,17 @@ describe('Todos API', () => {
   });
 
   it('Update Todo', async () => {
-    const newTodo = { title: 'New Todo to Update' }
+    const newTodo = { title: 'New Todo to Update' };
 
     const { body: createdTodo } = await createTodo(newTodo);
     expect(createdTodo.completed).toEqual(false);
 
-    await request(app).put('/todos/1').send({ completed: true });
+    await request(App).put('/api/todos/1').send({ completed: true });
 
     const { body: { completed } } = await getTodo(1);
     expect(completed).toEqual(true);
   });
 
-  const getTodo = (id: number) => request(app).get(`/todos/${id}`);
-  const createTodo = (todo: { title: string }) => request(app).post('/todos').send(todo);
+  const getTodo = (id: number) => request(App).get(`/api/todos/${id}`);
+  const createTodo = (todo: { title: string }) => request(App).post('/api/todos').send(todo);
 });
