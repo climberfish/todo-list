@@ -2,23 +2,23 @@ import TodosService from '@/application/services/todos.service';
 import { Request, Response } from 'express';
 
 const TodosController = {
-  getTodo: (req: Request, res: Response): void => {
-    const todo = TodosService.getTodo(Number(req.params.id));
+  getTodo: async (req: Request, res: Response): Promise<void> => {
+    const todo = await TodosService.getTodo(Number(req.params.id));
     res.json(todo);
   },
 
-  getTodos: (req: Request, res: Response): void => {
-    const todos = TodosService.getTodos();
+  getTodos: async (req: Request, res: Response): Promise<void> => {
+    const todos = await TodosService.getTodos();
     res.json({ todos });
   },
 
-  createTodo: (req: Request, res: Response): void => {
-    const newTodo = TodosService.createTodo(req.body.title);
+  createTodo: async (req: Request, res: Response): Promise<void> => {
+    const newTodo = await TodosService.createTodo(req.body.title);
     res.json(newTodo);
   },
 
-  updateTodo: (req: Request, res: Response): void => {
-    const updatedTodo = TodosService.updateTodo(Number(req.params.id), req.body);
+  updateTodo: async (req: Request, res: Response): Promise<void> => {
+    const updatedTodo = await TodosService.updateTodo(Number(req.params.id), req.body);
     res.json(updatedTodo);
   },
 };

@@ -1,4 +1,4 @@
-import { Todo } from '@/domain/entities/todo.entity';
+import Todo from '@/domain/entities/todo.entity';
 import TodosRepository from '@/interfaces/repositories/todos.repository';
 
 const TodosService = {
@@ -6,7 +6,9 @@ const TodosService = {
 
   getTodos: TodosRepository.getTodos,
 
-  createTodo: (title: string): Todo => TodosRepository.createTodo({ title, completed: false }),
+  createTodo: (title: string): Promise<Todo> => TodosRepository.createTodo({
+    title, completed: false,
+  }),
 
   updateTodo: TodosRepository.updateTodo,
 };

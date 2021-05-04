@@ -1,15 +1,16 @@
-import RootRouter from '@/interfaces/routes/index.router';
+import rootRouter from '@/interfaces/routes/index.router';
 import { json } from 'body-parser';
 import cors from 'cors';
-import express, { Application } from 'express';
+import express, { Express } from 'express';
 
-// const PORT = 4000;
+const createServer = (): Express => {
+  const app = express();
+  app.use(json());
+  app.use(cors());
 
-const app = express();
-app.use(json());
-app.use(cors());
+  app.use('/api', rootRouter);
+  app.use('/', (_, res) => res.send('Hello World'));
+  return app;
+};
 
-app.use('/api', RootRouter);
-app.use('/', (_, res) => res.send('Hello World'));
-
-export default app;
+export default createServer;

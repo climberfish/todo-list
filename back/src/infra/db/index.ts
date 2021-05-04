@@ -1,5 +1,5 @@
-import { Todo } from '@/domain/entities/todo.entity';
+import { Connection, getConnection } from 'typeorm';
 
-export type Database = { todos: Todo[] }
+const db = (): Connection => getConnection();
 
-export const defaultDb: Database = { todos: [] };
+export default db;

@@ -1,12 +1,15 @@
 import request from 'supertest';
-import { Todo } from '@/domain/entities/todo.entity';
-
-const todos: Todo[] = [];
-jest.mock('@/infra/db', () => ({ defaultDb: { todos } }));
-import App from '@/infra/web/server';
+import Todo from '@/domain/entities/todo.entity';
+import createServer from '@/infra/web/server';
+import { Express } from 'express';
 
 describe('Todos API', () => {
+  let app: Express;
+  const todos: Todo[] = [];
+
   beforeEach(() => {
+    jest.mock('@/infra/db', () => ({ defaultDb: { todos } }));
+    app = createServer();
     todos.length = 0;
   });
 
@@ -24,7 +27,7 @@ describe('Todos API', () => {
   });
 
   it('Get all Todos', (done) => {
-    request(App)
+    request(app)
       .get('/api/todos')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -55,12 +58,12 @@ describe('Todos API', () => {
     const { body: createdTodo } = await createTodo(newTodo);
     expect(createdTodo.completed).toEqual(false);
 
-    await request(App).put('/api/todos/1').send({ completed: true });
+    await request(app).put('/api/todos/1').send({ completed: true });
 
     const { body: { completed } } = await getTodo(1);
     expect(completed).toEqual(true);
   });
 
-  const getTodo = (id: number) => request(App).get(`/api/todos/${id}`);
-  const createTodo = (todo: { title: string }) => request(App).post('/api/todos').send(todo);
+  const getTodo = (id: number) => request(app).get(`/api/todos/${id}`);
+  const createTodo = (todo: { title: string }) => request(app).post('/api/todos').send(todo);
 });
